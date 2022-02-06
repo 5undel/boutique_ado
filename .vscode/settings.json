@@ -23,8 +23,5 @@
    "files.autoSave": "off",
    "workbench.colorTheme": "Atom One Dark",
    "terminal.integrated.gpuAcceleration": "canvas",
-   "editor.defaultFormatter": "HookyQR.beautify",
-   "[python]": {
-      "editor.defaultFormatter": "ms-python.python"
-   }
+   "editor.defaultFormatter": "HookyQR.beautify"
 }

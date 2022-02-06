@@ -9,8 +9,8 @@ from products.models import Product
 # Create your models here.
 
 
-class Oreder(models.Model):
-    oreder_number = models.CharField(max_length=32, null=False, editable=False)
+class Order(models.Model):
+    order_number = models.CharField(max_length=32, null=False, editable=False)
     full_name = models.CharField(max_length=50, null=False, blank=False)
     email = models.EmailField(max_length=254, null=False, blank=False)
     phone_number = models.CharField(max_length=20, null=False, blank=False)
@@ -21,12 +21,9 @@ class Oreder(models.Model):
     street_address2 = models.CharField(max_length=80, null=False, blank=False)
     county = models.CharField(max_length=80, null=True, blank=False)
     date = models.DateTimeField(auto_now_add=True)
-    delivery_cost = models.DecimalField(
-        max_digits=6, decimal_places=2, null=False, default=0)
-    order_total = models.DecimalField(
-        max_digits=10, decimal_places=2, null=False, default=0)
-    grand_total = models.DecimalField(
-        max_digits=10, decimal_places=2, null=False, default=0)
+    delivery_cost = models.DecimalField(max_digits=6, decimal_places=2, null=False, default=0)
+    order_total = models.DecimalField(max_digits=10, decimal_places=2, null=False, default=0)
+    grand_total = models.DecimalField(max_digits=10, decimal_places=2, null=False, default=0)
 
     def _generate_order_number(self):
         return uuid.uuid4().hex.upper()
@@ -43,31 +40,27 @@ class Oreder(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
-        if not self.oreder_number:
-            self.oreder_number = self._generate_order_number()
+        if not self.order_number:
+            self.order_number = self._generate_order_number()
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.oreder_number
+        return self.order_number
 
 
 class OrderLineItem(models.Model):
-    oreder = models.ForeignKey(
-        Oreder, null=False, blank=False, on_delete=models.CASCADE, related_name='lineitem')
-    product = models.ForeignKey(
-        Product, null=False, blank=False, on_delete=models.CASCADE)
-    product_size = models.CharField(
-        max_length=2, null=True, blank=True)  # XS, S, M, L, XL
+    order = models.ForeignKey(Order, null=False, blank=False, on_delete=models.CASCADE, related_name='lineitem')
+    product = models.ForeignKey(Product, null=False, blank=False, on_delete=models.CASCADE)
+    product_size = models.CharField(max_length=2, null=True, blank=True)  # XS, S, M, L, XL
     quantity = models.IntegerField(null=False, blank=False, default=0)
-    lineitem_total = models.DecimalField(
-        max_digits=6, decimal_places=2, null=False, blank=False, editable=False)
+    lineitem_total = models.DecimalField(max_digits=6, decimal_places=2, null=False, blank=False, editable=False)
 
     def save(self, *args, **kwargs):
-        if not self.oreder_number:
-            self.oreder_number = self._generate_order_number()
+        if not self.order_number:
+            self.order_number = self._generate_order_number()
 
         self.lineitem_total = self.product.price * self.quantity
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'SKU {self.product.sku} on order {self.order.oreder_number}'
+        return f'SKU {self.product.sku} on order {self.order.order_number}'
