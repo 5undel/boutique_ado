@@ -32,7 +32,7 @@ def checkout(request):
             order = order_form.save()
             for item_id, item_data in bag.item():
                 try:
-                    product = Product.object.get(id:item_id)
+                    product = Product.object.get(id=item_id)
                     if isinstance(item_data, int):
                         order_line_item = OrderLineItem(
                             order=order,
@@ -49,7 +49,7 @@ def checkout(request):
                             product_size=size,
                         )
                         order_line_item.save()
-                exceot Product.DoesNotExist:
+                except Product.DoesNotExist:
                     message.error(request, (
                         "One of the products in your bag wasn't found in our database. "
                         "Pleas call us for assistance!")
